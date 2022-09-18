@@ -1,17 +1,24 @@
 # Root by bisection
+from dataclasses import dataclass
 from typing import Callable
 
-def func(x: int | float) -> int|float:
+@dataclass
+class PhysicalValue:
+    value: float
+    uncertainty: float
+
+def foo(point: float) -> float:
     """This is the arbitrary function that we want to know the root of.
     """
-    return x**2 - 4
+    ## Use this to set illegal values
+    # if point == 0.:
+    #     raise ValueError(f'Value {point} is illegal')
+    return point**2 - 4
 
-def root_by_bisection(func: Callable[[int|float], int|float], guess: tuple[int|float], tolerance: float = 1.0e-6) -> tuple[float, float]:
-    left = guess[0]
-    right = guess[1]
-    dx = abs(right-left)
+def root_by_bisection(func: Callable[[float], float], left: float, right: float, tolerance: float = 1.0e-6) -> PhysicalValue:
+    interval = abs(right-left)
     
-    while dx > tolerance:
+    while interval > tolerance:
         midpoint = (left-right)/2.
         
         # Check if func(first) and func(mid) is on opposite sign 
@@ -22,11 +29,11 @@ def root_by_bisection(func: Callable[[int|float], int|float], guess: tuple[int|f
             # If same sign a*b => + (root is not between first and midpoint)
             left = midpoint
         #  Repeat loop with updated points and interval
-        dx = abs(right-left)
+        interval = abs(right-left)
     
-    return midpoint, dx
+    return PhysicalValue(value=midpoint, uncertainty=interval/2)
 
 
 if __name__ == "__main__":
-    x, uncertainty = root_by_bisection(guess=(0,6),func=func)
-    print(f"Function {func.__name__} has root at {x:.8f} +_ {uncertainty:.8f}")
+    answer: PhysicalValue = root_by_bisection(guess=(0,6),func=foo)
+    print(f"Function {foo.__name__} has root at {answer.value:.8f} +_ {answer.uncertainty:.8f}")
