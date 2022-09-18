@@ -15,9 +15,10 @@ def foo(point: float) -> float:
     #     raise ValueError(f'Value {point} is illegal')
     return point**2 - 4
 
-def root_by_bisection(func: Callable[[float], float], left: float, right: float, tolerance: float = 1.0e-6) -> PhysicalValue:
+def root_by_bisection(func: Callable[[float], float], left: float, right: float, tolerance: float = 1.0e-6, limit: int = 100) -> PhysicalValue:
     interval = abs(right-left)
     
+    run: int = 1
     while interval > tolerance:
         midpoint = (left-right)/2.
         
@@ -30,6 +31,8 @@ def root_by_bisection(func: Callable[[float], float], left: float, right: float,
             left = midpoint
         #  Repeat loop with updated points and interval
         interval = abs(right-left)
+        run += 1
+        if run == limit: raise ValueError(f'Loop has run {limit} times and no answer was found. Consider using other intervals.')
     
     return PhysicalValue(value=midpoint, uncertainty=interval/2)
 
