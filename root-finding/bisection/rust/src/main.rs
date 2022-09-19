@@ -3,7 +3,7 @@
 
 type Function = fn(&f64) -> Result<f64, String>;
 
-struct PhysicalValue {
+struct Answer {
     value: f64,
     uncertainty: f64,
 }
@@ -19,7 +19,7 @@ fn foo(point: &f64) -> Result<f64, String> {
 }
 
 
-fn root_by_bisection(func: Function, mut left: f64, mut right: f64, tolerance: Option<f64>, limit: Option<i64>) -> Result<PhysicalValue, String> {
+fn root_by_bisection(func: Function, mut left: f64, mut right: f64, tolerance: Option<f64>, limit: Option<i64>) -> Result<Answer, String> {
     // Unwrap optional arguments
     let tolerance = tolerance.unwrap_or(1.0e-6);
     let limit = limit.unwrap_or(100);
@@ -29,7 +29,7 @@ fn root_by_bisection(func: Function, mut left: f64, mut right: f64, tolerance: O
     
     let mut run: i64 = 1;
     loop {
-        if interval < tolerance {break Ok(PhysicalValue{value: midpoint, uncertainty: interval/2.})}
+        if interval < tolerance {break Ok(Answer{value: midpoint, uncertainty: interval/2.})}
         midpoint = (left - right) / 2.;
         if func(&left).unwrap()*func(&midpoint).unwrap() < 0. {
             right = midpoint
@@ -44,6 +44,6 @@ fn root_by_bisection(func: Function, mut left: f64, mut right: f64, tolerance: O
 
 /// Root by bisection
 fn main() {
-    let answer = root_by_bisection(foo, 0., 6., None).expect("Answer cannot be computed");
-    print!("The function has root at {} +_ {}", answer.value, answer.uncertainty)
+    let answer = root_by_bisection(foo, 0., 6., None, None).expect("Answer cannot be computed");
+    println!("The function has root at {} +_ {}", answer.value, answer.uncertainty)
 }
