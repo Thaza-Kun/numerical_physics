@@ -9,10 +9,10 @@ fn main() {
     println!("Secant {} {}",answer.value, answer.uncertainty);
 }
 
-fn foo(point: &f64) -> Result<f64, String> {
+fn foo(point: f64) -> Result<f64, String> {
     Ok(point.powi(2) - 4.)
 }
 
-fn deriv_foo(point: &f64) -> Result<f64, String> {
+fn deriv_foo(point: f64) -> Result<f64, String> {
     Ok(2.*point)
 }
